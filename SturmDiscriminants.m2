@@ -21,8 +21,6 @@ export {
 --   "denominatorMatrix"
 --   "radicalMatrix"
 --   "factorsMatrix"
---   "elementsWithPositiveCoefficients"
---   "elementsWithNegativeCoefficients"
 }
 
 
@@ -71,18 +69,6 @@ factorsMatrix = M ->(
     apply( factors , i -> value i )
     )
 
--- the following function takes as input a list of polynomials and
--- gives as output those polynomials with positive coefficients:
-elementsWithPositiveCoefficients = L ->(
-    Lpositive := toList (set (flatten apply (L, i -> if (all (flatten entries sub((coefficients (i))#1,QQ), j -> j >= 0 )) then i)) - set{null})
-    )
-
--- the following function takes as input a list of polynomials and
--- gives as output those polynomials with negative coefficients
-elementsWithNegativeCoefficients = L ->(
-    Lpositive := toList (set (flatten apply (L, i -> if (all (flatten entries sub((coefficients (i))#1,QQ), j -> j <= 0 )) then i)) - set{null})
-    )
-
 -- SturmDiscriminant; the ideal I should be an ideal of
 -- Rcoef[variables], where Rcoef=ring of coefficients
 SturmDiscriminant = I -> (
@@ -109,9 +95,9 @@ SturmDiscriminant = I -> (
     	);
     sturmdiscriminant = flatten entries sub (matrix{toList sturmdiscriminant},Rcoef);
     use R;
-    sturmdiscriminant = toList (set sturmdiscriminant - set{1_Rcoef}-set flatten entries vars Rcoef);
-    toList (set sturmdiscriminant - set elementsWithPositiveCoefficients sturmdiscriminant -set elementsWithNegativeCoefficients sturmdiscriminant)
+    toList (set sturmdiscriminant - set{1_Rcoef}-set flatten entries vars Rcoef)
     )
+
 
 beginDocumentation()
 
