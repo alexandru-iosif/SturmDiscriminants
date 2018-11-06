@@ -13,10 +13,10 @@ newPackage(
 
 export {
      -- 'Official' functions
-     "SturmDiscriminant"
+     "SturmDiscriminant",
+     "SturmSequence"
 
      -- Not in the interface:
---   "SturmSequence",
 --   "numeratorMatrix"
 --   "denominatorMatrix"
 --   "radicalMatrix"
@@ -29,7 +29,7 @@ SturmSequence = f -> (
      assert( isPolynomialRing ring f );
      assert( numgens ring f === 1 );
      R := ring f;
-     assert( char R == 0 );
+     assert( char R == 0 );    
      x := R_0;
      n := first degree f;
      c := new MutableList from toList (0 .. n);
@@ -39,7 +39,7 @@ SturmSequence = f -> (
                c#1 = diff(x,f);
                scan(2 .. n, i -> c#i = - c#(i-2) % c#(i-1));
                ));
-     toList c)
+       toList c)
 
 -- the following function takes as input a matrix M and returns
 -- another matrix whose entries are the numerator of M:
@@ -72,30 +72,41 @@ factorsMatrix = M ->(
 -- SturmDiscriminant; the ideal I should be an ideal of
 -- Rcoef[variables], where Rcoef=ring of coefficients
 SturmDiscriminant = I -> (
+    --add an option here; it seems that it takes a lot of time to compute the reduced discriminant; add an option Reduced = true or false
     R := ring I;
     Rcoef := coefficientRing R;
     assert( dim sub(I,frac(Rcoef)[flatten entries vars R]) == 0 );
     assert( char R == 0 );
-    assert( (class Rcoef) =!= FractionField );
+    assert( not (class Rcoef) === FractionField );
     K := frac(Rcoef);
     Rflat := (flattenRing R)#0;
     J := symbol J;
     fgenerator := symbol fgenerator;
     eliminationVariables := symbol eliminationVariables;
     fsturm := symbol fsturm;
+    LeadCoefficientsSturm := symbol LeadCoefficientsSturm;
+    ConstantTermsSturm := symbol ConstantTermsSturm;
+    LCCTMatrix := symbol LCCTMatrix;
     sturmdiscriminant := set {};
+    UnivariateRing := symbol UnivariateRing;
     for i from 0 to numgens R - 1 do(
     	eliminationVariables = toList set flatten entries  vars R - set{(flatten entries vars R)_i};
     	eliminationVariables = flatten entries sub(matrix{eliminationVariables},Rflat);
     	J_i = eliminate(sub(I,Rflat),eliminationVariables);
-    	assert (numgens J_i == 1);
-    	fgenerator = sub((gens J_i)_0_0,K[(vars R)_i_0]);
+    	assert (numgens J_i == 1 and not J_i == 0);
+	UnivariateRing = K[(vars R)_i_0];
+    	fgenerator = sub((gens J_i)_0_0,UnivariateRing);
     	fsturm = SturmSequence fgenerator;
-    	sturmdiscriminant = sturmdiscriminant + set factorsMatrix sub(numeratorMatrix sub((coefficients matrix {fsturm})#1,K),Rcoef) + set factorsMatrix sub(denominatorMatrix sub((coefficients matrix {fsturm})#1,K),Rcoef) ;
+	LeadCoefficientsSturm = sub(matrix {apply (fsturm, i -> leadCoefficient i)},K);
+        ConstantTermsSturm = sub(matrix {apply (fsturm, i -> coefficient(1_UnivariateRing,i))},K);
+	LCCTMatrix = LeadCoefficientsSturm | ConstantTermsSturm;
+    	sturmdiscriminant = sturmdiscriminant + set factorsMatrix sub(numeratorMatrix LCCTMatrix,Rcoef) + set factorsMatrix sub(denominatorMatrix LCCTMatrix,Rcoef) ;-- Uncomment this line if you want this function to compute a reduced discriminant
+--    	sturmdiscriminant = sturmdiscriminant + set flatten entries sub(numeratorMatrix LCCTMatrix,Rcoef) + set flatten entries sub(denominatorMatrix LCCTMatrix,Rcoef) ;-- Uncomment this line if you want this function to compute a non reduced discriminant
     	);
-    sturmdiscriminant = flatten entries sub (matrix{toList sturmdiscriminant},Rcoef);
+    sturmdiscriminant = toList sturmdiscriminant;
+--    sturmdiscriminant = flatten entries sub (matrix{toList sturmdiscriminant},Rcoef);
     use R;
-    toList (set sturmdiscriminant - set{1_Rcoef}-set flatten entries vars Rcoef)
+    set sturmdiscriminant - set{1_Rcoef} - set{0_Rcoef} - set{-1_Rcoef}
     )
 
 
