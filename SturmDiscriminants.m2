@@ -7,7 +7,9 @@ newPackage(
 		  Name => "Alexandru Iosif",
 		  Email => "alexandru.iosif@ovgu.de",
 		  HomePage => "https://alexandru-iosif.github.io"}},
-    	Headline => "Computation of Sturm Discriminants", 
+    	Headline => "Computation of Sturm Discriminants",
+	AuxiliaryFiles => false,    
+    	PackageImports => {"Elimination"},
 	DebuggingMode => false
 )
 
@@ -100,8 +102,8 @@ SturmDiscriminant = I -> (
 	LeadCoefficientsSturm = sub(matrix {apply (fsturm, i -> leadCoefficient i)},K);
         ConstantTermsSturm = sub(matrix {apply (fsturm, i -> coefficient(1_UnivariateRing,i))},K);
 	LCCTMatrix = LeadCoefficientsSturm | ConstantTermsSturm;
-    	sturmdiscriminant = sturmdiscriminant + set factorsMatrix sub(numeratorMatrix LCCTMatrix,Rcoef) + set factorsMatrix sub(denominatorMatrix LCCTMatrix,Rcoef) ;-- Uncomment this line if you want this function to compute a reduced discriminant
---   	sturmdiscriminant = sturmdiscriminant + set flatten entries sub(numeratorMatrix LCCTMatrix,Rcoef) + set flatten entries sub(denominatorMatrix LCCTMatrix,Rcoef) ;-- Uncomment this line if you want this function to compute a non reduced discriminant
+--    	sturmdiscriminant = sturmdiscriminant + set factorsMatrix sub(numeratorMatrix LCCTMatrix,Rcoef) + set factorsMatrix sub(denominatorMatrix LCCTMatrix,Rcoef) ;-- Uncomment this line if you want this function to compute a reduced discriminant
+   	sturmdiscriminant = sturmdiscriminant + set flatten entries sub(numeratorMatrix LCCTMatrix,Rcoef) + set flatten entries sub(denominatorMatrix LCCTMatrix,Rcoef) ;-- Uncomment this line if you want this function to compute a non reduced discriminant
     	);
 --    sturmdiscriminant = flatten entries sub (matrix{toList sturmdiscriminant},Rcoef);
     use R;
