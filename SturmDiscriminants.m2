@@ -100,13 +100,12 @@ SturmDiscriminant = I -> (
 	LeadCoefficientsSturm = sub(matrix {apply (fsturm, i -> leadCoefficient i)},K);
         ConstantTermsSturm = sub(matrix {apply (fsturm, i -> coefficient(1_UnivariateRing,i))},K);
 	LCCTMatrix = LeadCoefficientsSturm | ConstantTermsSturm;
-    	sturmdiscriminant = sturmdiscriminant + set factorsMatrix sub(numeratorMatrix LCCTMatrix,Rcoef) + set factorsMatrix sub(denominatorMatrix LCCTMatrix,Rcoef) ;-- Uncomment this line if you want this function to compute a reduced discriminant
---    	sturmdiscriminant = sturmdiscriminant + set flatten entries sub(numeratorMatrix LCCTMatrix,Rcoef) + set flatten entries sub(denominatorMatrix LCCTMatrix,Rcoef) ;-- Uncomment this line if you want this function to compute a non reduced discriminant
+--    	sturmdiscriminant = sturmdiscriminant + set factorsMatrix sub(numeratorMatrix LCCTMatrix,Rcoef) + set factorsMatrix sub(denominatorMatrix LCCTMatrix,Rcoef) ;-- Uncomment this line if you want this function to compute a reduced discriminant
+   	sturmdiscriminant = sturmdiscriminant + set flatten entries sub(numeratorMatrix LCCTMatrix,Rcoef) + set flatten entries sub(denominatorMatrix LCCTMatrix,Rcoef) ;-- Uncomment this line if you want this function to compute a non reduced discriminant
     	);
-    sturmdiscriminant = toList sturmdiscriminant;
 --    sturmdiscriminant = flatten entries sub (matrix{toList sturmdiscriminant},Rcoef);
     use R;
-    set sturmdiscriminant - set{1_Rcoef} - set{0_Rcoef} - set{-1_Rcoef}
+    toList (sturmdiscriminant - set{1_Rcoef} - set{0_Rcoef} - set{-1_Rcoef})
     )
 
 
@@ -146,3 +145,41 @@ end
 
 restart
 installPackage "SturmDiscriminants"
+
+
+R = QQ[a1,a2,a3,c1,c2,c3][x1,x2,x5];
+SturmDiscriminant ideal(x1+a1*x1*x2-c1, x5+a3*x1*x2-c2,
+x2*x5+a1*x1*x2*x5+a2*x1*x2+a3*x1*x2*x5-c3*x5)
+
+monomials (toList o3)_0
+
+toString (toList o3)_0
+
+monomials (toList o3)_1
+monomials (toList o3)_2
+monomials (toList o3)_3
+monomials (toList o3)_4
+monomials (toList o3)_5
+monomials (toList o3)_6
+monomials (toList o3)_7
+monomials (toList o3)_8
+monomials (toList o3)_9
+monomials (toList o3)_10
+monomials (toList o3)_11
+monomials (toList o3)_12
+monomials (toList o3)_13
+monomials (toList o3)_14
+monomials (toList o3)_15
+monomials (toList o3)_16
+
+
+
+For 2-sites phosphorylation
+R=QQ[b1,b2,b3,b4,b5,b6,b7,s1,s2,s3]
+I=ideal(b1*s1^2*s2*s3+b2*s1*s2*s3+b3*s1*s2-b3*c1,b4*s1^2*s2*s3+b5*s1*s2*s3+b3*s2-b3*c2, (b4+b1)*s1^2*s2*s3+b6*s1^2*s3+(b2+b5)*s1*s2*s3+b3*s3+b7*s1*s3-b3*c3)
+
+In Mathematica:
+E3=GroebnerBasis[{b1*s1^2*s2*s3+b2*s1*s2*s3+b3*s1*s2-b3*c1,b4*s1^2*s2*s3+b5*s1*s2*s3+b3*s2-b3*c2, (b4+b1)*s1^2*s2*s3+b6*s1^2*s3+(b2+b5)*s1*s2*s3+b3*s3+b7*s1*s3-b3*c3},{b1,b2,b3,b4,b5,b6,b7,s1,s2,s3},{s1,s2}];
+
+R=QQ[c,]
+I=ideal()
